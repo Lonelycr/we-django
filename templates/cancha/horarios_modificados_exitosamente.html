@@ -1,0 +1,8 @@
+{% extends "cancha/base.html" %}
+{% block contenido %}
+<div class="container">
+    <h2 class="text-center">¡Horario modificado exitosamente!</h2>
+    <p class="text-center">El horario para la infraestructura se ha modificado correctamente.</p>
+    <a href="{% url 'listar_infraestructuras' %}" class="btn btn-primary">Volver a la lista de infraestructuras</a>
+</div>
+{% endblock %}

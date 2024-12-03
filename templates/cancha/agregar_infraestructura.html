@@ -1,0 +1,74 @@
+{% extends "cancha/base.html" %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <title>Agregar Infraestructura</title>
+   
+</head>
+ <style>
+    .custom-navbar {
+            background-color: #b7b3b1; /* Cambia este valor al color deseado */
+        }
+    body {
+        background-color: #0a6077; /* Color de fondo para toda la página */
+        overflow: hidden; /* Elimina el scroll */
+        }
+    </style>
+{% block contenido %}
+
+    <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
+    </nav>
+    <div style="margin-top: 70px;"></div>
+
+    <div class="container mt-5">
+        <h2 class="text-center">Agregar Infraestructura</h2>
+        <form action="{% url 'agregar_infraestructura' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre de la Infraestructura</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo de Deporte</label>
+                <select class="form-select" id="tipo" name="tipo" required>
+                    <option value="" disabled selected>Seleccione el tipo...</option>
+                    {% for deporte in deportes %}
+                        <option value="{{ deporte.nombre }}">{{ deporte.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="capacidad" class="form-label">Capacidad</label>
+                <input type="number" class="form-control" id="capacidad" name="capacidad" min="1" required>
+            </div>
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="horarios" class="form-label">Horarios de Operación</label>
+                <input type="text" class="form-control" id="horarios" name="horarios" placeholder="Ejemplo: 08:00 - 22:00" required>
+            </div>
+            <div class="mb-3">
+                <label for="precio" class="form-label">Precio</label>
+                <input type="number" class="form-control" id="precio" name="precio" min="0" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="foto" class="form-label">Foto de la Infraestructura</label>
+                <input type="file" class="form-control" id="foto" name="foto" accept="image/*" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Agregar Infraestructura</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+{% endblock contenido %}
+{% block reserva %}{% endblock reserva %}
+{% block horarios %}{% endblock horarios %}

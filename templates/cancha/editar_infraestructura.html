@@ -1,0 +1,53 @@
+{% extends "cancha/base.html" %}
+{% load static %}
+
+{% block contenido %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Infraestructura</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1>Editar Infraestructura</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ infraestructura.nombre }}" required>
+            </div>
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" required>{{ infraestructura.descripcion }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="capacidad">Capacidad</label>
+                <input type="number" class="form-control" id="capacidad" name="capacidad" value="{{ infraestructura.capacidad }}" required>
+            </div>
+            <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <input type="text" class="form-control" id="tipo" name="tipo" value="{{ infraestructura.tipo }}" required>
+            </div>
+            <div class="form-group">
+                <label for="precio">Precio</label>
+                <input type="text" class="form-control" id="precio" name="precio" value="{{ infraestructura.precio }}" required>
+            </div>
+            <div class="form-group">
+                <label for="foto">Foto</label>
+                <input type="file" class="form-control" id="foto" name="foto">
+                {% if infraestructura.foto %}
+                    <img src="{{ infraestructura.foto.url }}" alt="Foto actual" style="max-width: 100px; margin-top: 10px;">  <!-- Muestra la foto actual -->
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a href="{% url 'lista_infraestructuras' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock contenido %}
+{% block reserva %}{% endblock reserva %}
+{% block horarios %}{% endblock horarios %}

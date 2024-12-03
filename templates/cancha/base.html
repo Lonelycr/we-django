@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Canchas Oficial</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+</head>
+<body>
+<style>
+    .custom-navbar {
+        background-color: #1d1d1d; /* Cambia este valor al color deseado */
+    }
+</style>
+<div class="container">
+    <!-- Este es el Inicio del Menú -->
+    <div class="col">
+        {% block menu %}
+        <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
+            <div class="container-fluid justify-content-center">
+                 <a class="navbar-brand mx-auto" href="{% url 'inicio' %}">
+                <img src="{% static 'images/logofi.png' %}" alt="Logo" class="img-fluid" style="width: 120px;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+        <div style="margin-top: 70px;"></div>
+        {% endblock menu %}
+    </div>
+
+    <!--Inicio del Mensaje de notificación-->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <div type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <!--Fin del Mensaje de notificación-->
+
+
+    <!-- Este es el Fin del Menú -->
+
+    <!-- Este es el Inicio de Contenido -->
+    {% block contenido %}
+    {% endblock contenido %}
+    <!-- Este es el Fin de Contenido -->
+
+    <!-- Este es el Inicio del Footer -->
+    {% block footer %}
+<footer class="footer mt-auto py-3 bg-dark fixed-bottom custom-navbar">
+    <div class="container d-flex justify-content-center">
+        <div class="mx-3 text-center">
+            <a href="{% url 'iniciar_sesion' %}">
+                <img src="{% static 'images/perfil.png' %}" alt="Perfil" class="img-fluid rounded-circle" style="width: 50px;">
+            </a>
+            <p class="text-white">Perfil</p>
+        </div>
+
+        <!-- Opciones adicionales para usuarios tipo 'admin' -->
+        {% if tipo_usuario_id == 1 %}
+            <!-- Mostrar infraestructuras solo para admin (ID = 1) -->
+            <div class="mx-3 text-center">
+                <a href="{% url 'lista_infraestructuras' %}">
+                    <img src="{% static 'images/agregar.png' %}" alt="Infraestructura" class="img-fluid rounded-circle" style="width: 50px;">
+                </a>
+                <p class="text-white">Infraestructuras</p>
+            </div>
+        {% endif %}
+        
+        <!-- Opciones para todos los usuarios -->
+        <div class="mx-3 text-center">
+            <a href="{% url 'historial_reservas' %}">
+                <img src="{% static 'images/historial.png' %}" alt="Horarios" class="img-fluid" style="width: 50px;">
+            </a>
+            <p class="text-white">Horarios</p>
+        </div>
+        
+        <!-- Opción para cerrar sesión -->
+      
+        <div class="mx-3 text-center">
+            <a href="{% url 'cerrar_sesion' %}">
+                <img src="{% static 'images/logout.png' %}" alt="Cerrar Sesión" class="img-fluid" style="width: 50px;">
+            </a>
+            <p class="text-white">Cerrar Sesión</p>
+        </div>
+        
+    </div>
+</footer>
+{% endblock footer %}
+    <!-- Este es el Fin del Footer -->
+    
+    <!-- Este es el Inicio del Js -->
+    {% block js %}
+    {% endblock js %}
+</div>
+</body>
+</html>

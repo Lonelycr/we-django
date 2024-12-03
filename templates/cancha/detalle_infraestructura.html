@@ -1,0 +1,31 @@
+{% extends "cancha/base.html" %}
+{% block contenido %}
+<style>
+    body {
+        background-color: #0a6077;
+    }
+</style>
+<div class="container mt-5">
+    <h2 class="text-center">{{ infraestructura.nombre }}</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ infraestructura.foto.url }}" alt="{{ infraestructura.nombre }}" style="width: 100%; height: 400px; object-fit: cover;">
+        </div>
+        <div class="col-md-6">
+            <p><strong>Descripción:</strong> {{ infraestructura.descripcion }}</p>
+            <p><strong>Capacidad:</strong> {{ infraestructura.capacidad }} personas</p>
+            <p><strong>Precio:</strong> ${{ infraestructura.precio }}</p>
+           
+            <a href="{% url 'editar_infraestructura' infraestructura.pk %}" class="btn btn-warning">Modificar</a>
+            <a href="{% url 'eliminar_infraestructura' infraestructura.id %}" class="btn btn-danger" >Eliminar</a>
+                   
+            </form>
+        </div>
+    </div>
+    
+    <a href="{% url 'lista_infraestructuras' %}" class="btn btn-primary mt-4">Volver a la lista de infraestructuras</a>
+    
+    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-primary mt-4">Volver</a>
+</div>
+{% endblock %}
+

@@ -1,0 +1,100 @@
+{% extends "cancha/base.html" %}
+{% load static %}
+
+{% block contenido %}
+<style>
+    body {
+        background-color: #0a6077;
+    }
+    .container {
+        max-width: 1200px;
+    }
+    .header-background {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .filter-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .filter-form input, .filter-form select {
+        flex: 1;
+    }
+</style>
+
+<div class="container header-background">
+    <h2>{% if es_admin %}Historial de Reservas de Todos los Usuarios{% else %}Historial de Reservas{% endif %}</h2>
+
+    <!-- Formulario de filtro -->
+    <form method="get" class="filter-form">
+        {% if es_admin %}
+            <input type="text" name="usuario" class="form-control" placeholder="Nombre de usuario" value="{{ request.GET.usuario }}">
+        {% endif %}
+        <input type="text" name="deporte" class="form-control" placeholder="Deporte" value="{{ request.GET.deporte }}">
+        <input type="date" name="fecha" class="form-control" value="{{ request.GET.fecha }}">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a href="{% url 'historial_reservas' %}" class="btn btn-secondary">Limpiar</a>
+    </form>
+
+    {% if reservas %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Deporte</th>
+                    <th>Infraestructura</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Precio Original</th>
+                    <th>Precio Con Descuento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reserva in reservas %}
+                    <tr>
+                        <td>{{ reserva.usuario.nombre }}</td>
+                        <td>{{ reserva.deporte.nombre }}</td>
+                        <td>{{ reserva.infraestructura.nombre }}</td>
+                        <td>{{ reserva.fecha }}</td>
+                        <td>{{ reserva.horario }}</td>
+                        <td>${{ reserva.infraestructura.precio }}</td>
+                        <td>${{ reserva.precio_total }}</td>
+                       <td>
+                            {% if reserva.fecha|date:"Y-m-d" >= fecha_actual|date:"Y-m-d" %}
+                                <a href="{% url 'editar_reserva' reserva.id %}" class="btn btn-warning">Modificar Hora</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            {% if reservas.has_previous %}
+                <a href="?page=1" class="btn btn-primary">&laquo; Primera</a>
+                <a href="?page={{ reservas.previous_page_number }}" class="btn btn-primary">Anterior</a>
+            {% endif %}
+            
+            <span class="btn btn-light">Página {{ reservas.number }} de {{ reservas.paginator.num_pages }}</span>
+            
+            {% if reservas.has_next %}
+                <a href="?page={{ reservas.next_page_number }}" class="btn btn-primary">Siguiente</a>
+                <a href="?page={{ reservas.paginator.num_pages }}" class="btn btn-primary">Última &raquo;</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center">
+            {% if es_admin %}
+                No hay reservas registradas.
+            {% else %}
+                No tienes reservas registradas.
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+{% endblock contenido %}

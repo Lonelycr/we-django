@@ -1,0 +1,71 @@
+{% extends "cancha/base.html" %}
+{% load static %}
+
+{% block contenido %}
+<style>
+    h2 {
+    color: white; /* Cambia el color del texto a blanco */
+}
+
+</style>
+<body style="margin-top: 100px; background-image: url('{% static "images/background.png" %}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
+        <div class="container-fluid justify-content-center">
+            <a class="navbar-brand mx-auto" href="{% url 'inicio' %}">
+                <img src="{% static 'images/logofi.png' %}" alt="Logo" class="img-fluid" style="width: 150px;">
+            </a>
+        </div>
+    </nav>
+
+    <!-- Mensaje de Bienvenida -->
+    {% if usuario %}
+        <div class="container mt-5 d-flex justify-content-center">
+            <div class="p-4 text-center" style="background-color: white; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); max-width: 500px; opacity: 0.9;">
+                <h3>Bienvenido, {{ usuario.nombre }}!</h3>  <!-- Mostrar el nombre del usuario -->
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Contenido principal -->
+    <div class="container mt-5">
+        <h2 class="text-center">Deportes Disponibles</h2>
+
+        <!-- Botón para crear un nuevo deporte -->
+       <div class="text-center mb-4">
+        {% if tipo_usuario_id == 1 %}  <!-- Verificar si el usuario es admin -->
+        <a href="{% url 'crear_deporte' %}" class="btn btn-success">Crear Deporte</a>
+            {% endif %}
+        </div>
+
+        <!-- Listado de deportes -->
+        <div class="row">
+            {% for deporte in deportes %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <a href="{% url 'campos_por_deporte' deporte.id %}">
+                            <img src="{{ deporte.logo.url }}" class="card-img-top img-fluid" alt="{{ deporte.nombre }}" style="max-width: 100%; height: 150px; object-fit: contain;">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ deporte.nombre }}</h5>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay deportes disponibles.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    
+
+
+    <!-- Scripts -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+{% endblock contenido %}
+
+{% block reserva %}{% endblock reserva %}
+{% block horarios %}{% endblock horarios %}

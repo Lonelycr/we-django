@@ -1,0 +1,145 @@
+{% extends "cancha/base.html" %}
+
+{% block contenido %}
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+    .full-height {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    body {
+        background-color: #0a6077;
+    }
+    .card {
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        width: 100%;
+        background-color: #fff;
+    }
+    h2 {
+        font-size: 1.75rem;
+        color: #007bff;
+    }
+    input[type="date"],
+    input[type="number"],
+    select {
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        padding: 10px;
+        transition: border-color 0.3s;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    input[type="date"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+    .btn {
+        border-radius: 8px;
+        width: 100%;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .text-muted {
+        font-size: 0.875rem;
+    }
+    #modifyHourButton {
+        margin-top: 20px;
+        display: none;
+    }
+</style>
+
+<div class="container full-height">
+    <div class="card shadow-lg">
+        <h2 class="text-center mb-4">Reservar {{ infraestructura.nombre }}</h2>
+
+        <form method="POST" action="{% url 'procesar_reserva' infraestructura.id %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="fecha_reserva">Fecha de Reserva:</label>
+                <input type="date" name="fecha" class="form-control" required id="fecha_reserva">
+            </div>
+
+            <div class="form-group">
+                <label for="hora_reserva">Hora de Reserva:</label>
+                <select name="hora" class="form-control" required id="hora_reserva">
+                    <option value="">Seleccione una hora</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="cantidad_personas">Cantidad de Personas:</label>
+                <input type="number" name="cantidad_personas" class="form-control" 
+                       max="{{ infraestructura.capacidad }}" required id="cantidad_personas">
+                <small class="text-muted">Capacidad máxima: {{ infraestructura.capacidad }} personas.</small>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Código de Descuento:</label>
+                <input type="text" name="codigo_descuento" class="form-control" placeholder="Ingrese su código">
+                <small class="text-muted">Aplica si tiene un descuento válido.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    // Establece la fecha mínima en el campo de fecha al día de hoy
+    document.getElementById('fecha_reserva').min = new Date().toISOString().split('T')[0];
+
+    // Función para obtener horas disponibles al cambiar la fecha
+    document.getElementById('fecha_reserva').addEventListener('change', function() {
+        const fecha = this.value;
+        const infraestructura_id = "{{ infraestructura.id }}";  // Asegúrate de que infraestructura.id esté disponible
+        const url = `/obtener_horas_disponibles/${infraestructura_id}/?dia=${fecha}`;  // Incluye el parámetro 'dia'
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const selectHora = document.getElementById('hora_reserva');
+                selectHora.innerHTML = '<option value="">Seleccione una hora</option>';  // Limpia las opciones anteriores
+
+                if (data.horas_disponibles.length > 0) {
+                    // Agregar las horas disponibles al select
+                    data.horas_disponibles.forEach(hora => {
+                        const option = document.createElement('option');
+                        option.value = hora.hora_inicio;
+                        option.textContent = `${hora.hora_inicio} - ${hora.hora_fin}`;
+                        selectHora.appendChild(option);
+                    });
+                    selectHora.disabled = false; // Habilitar el select si hay horas disponibles
+                    // Mostrar el botón para modificar la hora si se seleccionaron horas disponibles
+                    document.getElementById('modifyHourButton').style.display = 'inline-block';
+                } else {
+                    // Si no hay horas disponibles
+                    const option = document.createElement('option');
+                    option.textContent = 'No hay horas disponibles';
+                    selectHora.appendChild(option);
+                    selectHora.disabled = true; // Deshabilitar el select si no hay horas
+                    // Ocultar el botón de modificar hora
+                    document.getElementById('modifyHourButton').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener las horas disponibles:', error);
+            });
+    });
+</script>
+
+{% endblock contenido %}

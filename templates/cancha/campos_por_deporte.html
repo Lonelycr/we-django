@@ -1,0 +1,41 @@
+{% extends "cancha/base.html" %}
+{% load static %}
+{% block contenido %}
+<style>
+    body {
+        background-color: #0a6077;
+    }
+</style>
+<div class="container mt-5" style="padding: 20px; border-radius: 8px;">
+    <h2 class="text-center text-dark header-background">Campos para {{ deporte.nombre }}</h2>
+
+    <div class="row">
+        {% for infraestructura in infraestructuras %}
+            {% if infraestructura.estado == 'activo' %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ infraestructura.foto.url }}" class="card-img-top" 
+                         alt="{{ infraestructura.nombre }}"
+                         style="height: 200px; object-fit: cover;">
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ infraestructura.nombre }}</h5>
+                        <p class="card-text">{{ infraestructura.descripcion }}</p>
+                        <p><strong>Capacidad:</strong> {{ infraestructura.capacidad }} personas</p>
+                        <p><strong>Precio:</strong> ${{ infraestructura.precio }}</p>
+                        
+                        <a href="{% url 'procesar_reserva' infraestructura.pk %}" class="btn btn-primary">Reservar</a>
+                        <a href="{% url 'ver_detalle_infraestructura' infraestructura.pk %}" class="btn btn-info mt-2">Ver Detalle</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% empty %}
+            <div class="col-12 text-center">
+                <p>No hay infraestructuras disponibles para este deporte.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock contenido %}

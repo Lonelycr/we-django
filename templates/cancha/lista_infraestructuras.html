@@ -1,0 +1,70 @@
+{% extends "cancha/base.html" %}
+{% load static %}
+{% block contenido %}
+<style>
+    body {
+        background-color: #0a6077; /* Color de fondo para toda la página */
+       
+    }
+</style>
+<div class="container table-container">
+    <h1 class="header-background">Lista de Infraestructuras</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Deporte</th>
+                <th>Capacidad</th>
+                <th>Descripción</th>
+                <th>Horarios</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Foto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for infraestructura in infraestructuras %}
+            <tr>
+                <td>{{ infraestructura.nombre }}</td>
+                <td>{{ infraestructura.tipo }}</td>
+                <td>{{ infraestructura.capacidad }}</td>
+                <td>{{ infraestructura.descripcion }}</td>
+                <td>{{ infraestructura.horarios }}</td>
+                <td>${{ infraestructura.precio }}</td>
+                <td>
+                    <form method="POST" action="{% url 'cambiar_estado_infraestructura' infraestructura.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <select name="estado" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="activo" {% if infraestructura.estado == 'activo' %}selected{% endif %}>Activo</option>
+                            <option value="mantenimiento" {% if infraestructura.estado == 'mantenimiento' %}selected{% endif %}>En Mantenimiento</option>
+                            <option value="inactivo" {% if infraestructura.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                            <option value="reparacion" {% if infraestructura.estado == 'reparacion' %}selected{% endif %}>En Reparación</option>
+                        </select>
+                    </form>
+                </td>
+                <td>
+                    <img src="{{ infraestructura.foto.url }}" alt="Imagen de {{ infraestructura.nombre }}" width="100">
+                </td>
+                <td>
+                    <a href="{% url 'editar_infraestructura' infraestructura.id %}" class="btn btn-warning">Editar</a>
+                    <a href="{% url 'eliminar_infraestructura' infraestructura.id %}" class="btn btn-danger" >Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center">No hay infraestructuras disponibles.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'agregar_infraestructura' %}" class="btn btn-primary">Agregar Nueva Infraestructura</a>
+    </div>
+</div>
+
+{% endblock contenido %}
+{% block reserva %}{% endblock reserva %}
+{% block horarios %}{% endblock horarios %}
